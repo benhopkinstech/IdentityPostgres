@@ -1,6 +1,11 @@
 using IdentityPostgres.Classes;
+using IdentityPostgres.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<IdentityContext>(options =>
+options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

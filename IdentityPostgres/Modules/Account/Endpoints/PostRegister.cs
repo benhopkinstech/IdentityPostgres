@@ -1,8 +1,10 @@
-﻿namespace IdentityPostgres.Modules.Account.Endpoints
+﻿using IdentityPostgres.Data;
+
+namespace IdentityPostgres.Modules.Account.Endpoints
 {
-    public class PostRegister
+    public static class PostRegister
     {
-        public static IResult RegisterAsync()
+        public static async Task<IResult> RegisterAsync(IdentityContext context)
         {
             return Results.Ok();
         }

@@ -16,6 +16,7 @@ namespace IdentityPostgres.Modules.Account
         public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
         {
             endpoints.MapPost($"{_module}/Register", PostRegister.RegisterAsync)
+                .Produces(StatusCodes.Status201Created).Produces(StatusCodes.Status409Conflict)
                 .WithTags(_module).WithName(nameof(PostRegister.RegisterAsync)).WithOpenApi();
             return endpoints;
         }
