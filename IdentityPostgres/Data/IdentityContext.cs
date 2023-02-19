@@ -38,10 +38,26 @@ public partial class IdentityContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("pk_account");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CreatedOn).HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
+            entity.ToTable("account", "identity");
+
+            entity.HasIndex(e => new { e.ProviderId, e.Email }, "u_account").IsUnique();
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedOn)
+                .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
+                .HasColumnName("created_on");
+            entity.Property(e => e.Email)
+                .HasMaxLength(256)
+                .HasColumnName("email");
+            entity.Property(e => e.ProviderId).HasColumnName("provider_id");
+            entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
+            entity.Property(e => e.Verified).HasColumnName("verified");
+            entity.Property(e => e.VerifiedOn).HasColumnName("verified_on");
 
             entity.HasOne(d => d.Provider).WithMany(p => p.Account)
+                .HasForeignKey(d => d.ProviderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_account_account_provider");
         });
@@ -50,18 +66,40 @@ public partial class IdentityContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("pk_account_login");
 
-            entity.Property(e => e.CreatedOn).HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
+            entity.ToTable("account_login", "identity");
 
-            entity.HasOne(d => d.Account).WithMany(p => p.AccountLogin).HasConstraintName("fk_account_login_account");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AccountId).HasColumnName("account_id");
+            entity.Property(e => e.CreatedOn)
+                .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
+                .HasColumnName("created_on");
+            entity.Property(e => e.Email)
+                .HasMaxLength(256)
+                .HasColumnName("email");
+            entity.Property(e => e.IpAddress).HasColumnName("ip_address");
+            entity.Property(e => e.Successful).HasColumnName("successful");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.AccountLogin)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("fk_account_login_account");
         });
 
         modelBuilder.Entity<AccountPassword>(entity =>
         {
             entity.HasKey(e => e.AccountId).HasName("pk_account_password");
 
-            entity.Property(e => e.AccountId).ValueGeneratedNever();
+            entity.ToTable("account_password", "identity");
+
+            entity.Property(e => e.AccountId)
+                .ValueGeneratedNever()
+                .HasColumnName("account_id");
+            entity.Property(e => e.Hash)
+                .HasMaxLength(60)
+                .HasColumnName("hash");
+            entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.HasOne(d => d.Account).WithOne(p => p.AccountPassword)
+                .HasForeignKey<AccountPassword>(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_account_password_account");
         });
@@ -70,27 +108,64 @@ public partial class IdentityContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("pk_account_provider");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.ToTable("account_provider", "identity");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(20)
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<Config>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_config");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.UpdatedOn).HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
+            entity.ToTable("config", "identity");
 
-            entity.HasOne(d => d.Mail).WithMany(p => p.Config).HasConstraintName("fk_config_config_mail");
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.AccountVerificationRequired).HasColumnName("account_verification_required");
+            entity.Property(e => e.MailId).HasColumnName("mail_id");
+            entity.Property(e => e.UpdatedOn)
+                .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
+                .HasColumnName("updated_on");
+
+            entity.HasOne(d => d.Mail).WithMany(p => p.Config)
+                .HasForeignKey(d => d.MailId)
+                .HasConstraintName("fk_config_config_mail");
         });
 
         modelBuilder.Entity<ConfigMail>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_config_mail");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CreatedOn).HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
+            entity.ToTable("config_mail", "identity");
+
+            entity.HasIndex(e => e.ProviderId, "u_config_mail").IsUnique();
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.ApiKey)
+                .HasMaxLength(256)
+                .HasColumnName("api_key");
+            entity.Property(e => e.CreatedOn)
+                .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
+                .HasColumnName("created_on");
+            entity.Property(e => e.Email)
+                .HasMaxLength(256)
+                .HasColumnName("email");
+            entity.Property(e => e.Name)
+                .HasMaxLength(70)
+                .HasColumnName("name");
+            entity.Property(e => e.ProviderId).HasColumnName("provider_id");
+            entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.HasOne(d => d.Provider).WithOne(p => p.ConfigMail)
+                .HasForeignKey<ConfigMail>(d => d.ProviderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_config_mail_config_mail_provider");
         });
@@ -99,21 +174,44 @@ public partial class IdentityContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("pk_config_mail_provider");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.ToTable("config_mail_provider", "identity");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(20)
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<ConfigMailTemplate>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_config_mail_template");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CreatedOn).HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
+            entity.ToTable("config_mail_template", "identity");
+
+            entity.HasIndex(e => new { e.MailId, e.TypeId }, "u_config_mail_template").IsUnique();
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedOn)
+                .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
+                .HasColumnName("created_on");
+            entity.Property(e => e.MailId).HasColumnName("mail_id");
+            entity.Property(e => e.ProviderTemplateIdentifier)
+                .HasMaxLength(100)
+                .HasColumnName("provider_template_identifier");
+            entity.Property(e => e.TypeId).HasColumnName("type_id");
+            entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.HasOne(d => d.Mail).WithMany(p => p.ConfigMailTemplate)
+                .HasForeignKey(d => d.MailId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_config_mail_template_config_mail");
 
             entity.HasOne(d => d.Type).WithMany(p => p.ConfigMailTemplate)
+                .HasForeignKey(d => d.TypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_config_mail_template_config_mail_type");
         });
@@ -122,7 +220,14 @@ public partial class IdentityContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("pk_config_mail_type");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.ToTable("config_mail_type", "identity");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(20)
+                .HasColumnName("name");
         });
 
         OnModelCreatingPartial(modelBuilder);

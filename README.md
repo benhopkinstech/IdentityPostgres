@@ -15,4 +15,4 @@ If you are making any changes to the database structure be sure to amend the `db
 
 In Visual Studio press `Ctrl+'` to open the package manager console, here we can run the command below to update the code for any database changes
 
-`Scaffold-DbContext Name=ConnectionStrings:Database Npgsql.EntityFrameworkCore.PostgreSQL -NoOnConfiguring -NoPluralize -DataAnnotations -Context IdentityContext -Schema identity -ContextDir Data -OutputDir Data/Tables -Force`
+`Scaffold-DbContext Name=ConnectionStrings:Database Npgsql.EntityFrameworkCore.PostgreSQL -NoOnConfiguring -NoPluralize -Context IdentityContext -Schema identity -ContextDir Data -OutputDir Data/Tables -Force`
