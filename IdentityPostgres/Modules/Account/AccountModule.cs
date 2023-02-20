@@ -1,5 +1,6 @@
 ﻿using IdentityPostgres.Interfaces;
 using IdentityPostgres.Modules.Account.Endpoints;
+using IdentityPostgres.Modules.Account.Filters;
 using Microsoft.AspNetCore.Builder;
 
 namespace IdentityPostgres.Modules.Account
@@ -16,7 +17,8 @@ namespace IdentityPostgres.Modules.Account
         public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
         {
             endpoints.MapPost($"{_module}/Register", PostRegister.RegisterAsync)
-                .Produces(StatusCodes.Status201Created).Produces(StatusCodes.Status409Conflict)
+                .AddEndpointFilter<CredentialsValidationFilter>()
+                .Produces(StatusCodes.Status201Created).Produces(StatusCodes.Status400BadRequest).Produces(StatusCodes.Status409Conflict)
                 .WithTags(_module).WithName(nameof(PostRegister.RegisterAsync)).WithOpenApi();
             return endpoints;
         }
