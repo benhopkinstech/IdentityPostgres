@@ -61,7 +61,8 @@ CREATE TABLE identity.config
     id smallint NOT NULL DEFAULT 0,
     mail_id uuid,
     account_verification_required bool NOT NULL,
-    updated_on timestamp with time zone DEFAULT (now() at time zone 'utc'),
+    created_on timestamp with time zone NOT NULL DEFAULT (now() at time zone 'utc'),
+    updated_on timestamp with time zone,
     CONSTRAINT pk_config PRIMARY KEY (id),
     CONSTRAINT chk_config CHECK (id = 0),
     CONSTRAINT fk_config_config_mail FOREIGN KEY (mail_id)

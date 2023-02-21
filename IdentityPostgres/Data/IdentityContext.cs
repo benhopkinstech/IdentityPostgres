@@ -128,10 +128,11 @@ public partial class IdentityContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.AccountVerificationRequired).HasColumnName("account_verification_required");
-            entity.Property(e => e.MailId).HasColumnName("mail_id");
-            entity.Property(e => e.UpdatedOn)
+            entity.Property(e => e.CreatedOn)
                 .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
-                .HasColumnName("updated_on");
+                .HasColumnName("created_on");
+            entity.Property(e => e.MailId).HasColumnName("mail_id");
+            entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.HasOne(d => d.Mail).WithMany(p => p.Config)
                 .HasForeignKey(d => d.MailId)

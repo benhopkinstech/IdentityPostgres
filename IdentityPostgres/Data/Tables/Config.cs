@@ -11,6 +11,8 @@ public partial class Config
 
     public bool AccountVerificationRequired { get; set; }
 
+    public DateTime CreatedOn { get; set; }
+
     public DateTime? UpdatedOn { get; set; }
 
     public virtual ConfigMail? Mail { get; set; }
