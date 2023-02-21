@@ -11,10 +11,10 @@ namespace IdentityPostgres.Modules.AccountModule.Filters
             var errors = new List<string>();
 
             if (String.IsNullOrWhiteSpace(credentials.Email))
-                errors.Add("Email must be provided");
+                errors.Add("Email address must be provided");
 
             if (credentials.Email.Length > 256)
-                errors.Add("Email maximum length is 256");
+                errors.Add("Email address maximum length is 256");
 
             if (!MailAddress.TryCreate(credentials.Email, out _))
                 errors.Add("Email address format invalid");

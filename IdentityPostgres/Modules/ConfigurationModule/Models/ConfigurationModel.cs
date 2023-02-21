@@ -2,12 +2,12 @@
 {
     public class ConfigurationModel
     {
-        public string CurrentMailProvider { get; set; }
+        public string MailProvider { get; set; }
         public bool AccountVerificationRequired { get; set; }
 
         public ConfigurationModel()
         {
-            CurrentMailProvider = "";
+            MailProvider = "";
             AccountVerificationRequired = false;
         }
     }

@@ -10,12 +10,12 @@ namespace IdentityPostgres.Modules.ConfigurationModule.Endpoints
     {
         public static async Task<IResult> PutConfigurationAsync(ConfigurationModel configuration, IdentityContext context)
         {
-            short providerId = MailHelper.DetermineMailProviderId(configuration.CurrentMailProvider);
-            if (providerId == -1 && !String.IsNullOrWhiteSpace(configuration.CurrentMailProvider))
+            short providerId = MailHelper.DetermineMailProviderId(configuration.MailProvider);
+            if (providerId == -1 && !String.IsNullOrWhiteSpace(configuration.MailProvider))
                 return Results.NotFound("Provider not found or supported");
 
             var configMail = await context.ConfigMail.Where(x => x.ProviderId == providerId).FirstOrDefaultAsync();
-            if (configMail == null && !String.IsNullOrWhiteSpace(configuration.CurrentMailProvider))
+            if (configMail == null && !String.IsNullOrWhiteSpace(configuration.MailProvider))
                 return Results.NotFound("No mail configuration found for this provider");
 
             var config = await context.Config.FirstOrDefaultAsync();

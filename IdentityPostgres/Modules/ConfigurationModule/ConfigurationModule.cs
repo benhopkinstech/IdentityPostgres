@@ -23,6 +23,10 @@ namespace IdentityPostgres.Modules.ConfigurationModule
                 .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status201Created).Produces(StatusCodes.Status404NotFound)
                 .WithTags(_module).WithName(nameof(Put.PutConfigurationAsync)).WithOpenApi();
 
+            endpoints.MapGet($"{_module}/Mail/Provider", GetMailProvider.GetMailProvidersAsync)
+                .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status404NotFound)
+                .WithTags(_module).WithName(nameof(GetMailProvider.GetMailProvidersAsync)).WithOpenApi();
+
             endpoints.MapGet($"{_module}/Mail", GetMail.GetMailConfigurationsAsync)
                 .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status404NotFound)
                 .WithTags(_module).WithName(nameof(GetMail.GetMailConfigurationsAsync)).WithOpenApi();
@@ -31,10 +35,6 @@ namespace IdentityPostgres.Modules.ConfigurationModule
                 .AddEndpointFilter<MailValidationFilter>()
                 .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status201Created).Produces(StatusCodes.Status400BadRequest).Produces(StatusCodes.Status404NotFound)
                 .WithTags(_module).WithName(nameof(PutMail.PutMailConfigurationAsync)).WithOpenApi();
-
-            endpoints.MapGet($"{_module}/Mail/Provider", GetMailProvider.GetMailProvidersAsync)
-                .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status404NotFound)
-                .WithTags(_module).WithName(nameof(GetMailProvider.GetMailProvidersAsync)).WithOpenApi();
 
             endpoints.MapGet($"{_module}/Mail/Type", GetMailType.GetMailTypesAsync)
                 .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status404NotFound)
@@ -48,6 +48,15 @@ namespace IdentityPostgres.Modules.ConfigurationModule
                 .AddEndpointFilter<MailTemplateValidationFilter>()
                 .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status201Created).Produces(StatusCodes.Status400BadRequest).Produces(StatusCodes.Status404NotFound)
                 .WithTags(_module).WithName(nameof(PutMailTemplate.PutMailTemplateAsync)).WithOpenApi();
+
+            endpoints.MapDelete($"{_module}/Mail/Template", DeleteMailTemplate.DeleteMailTemplateAsync)
+                .Produces(StatusCodes.Status204NoContent).Produces(StatusCodes.Status404NotFound)
+                .WithTags(_module).WithName(nameof(DeleteMailTemplate.DeleteMailTemplateAsync)).WithOpenApi();
+
+            endpoints.MapPost($"{_module}/Mail/Test", PostMailTest.PostMailTestAsync)
+                .AddEndpointFilter<MailTestValidationFilter>()
+                .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status400BadRequest).Produces(StatusCodes.Status404NotFound)
+                .WithTags(_module).WithName(nameof(PostMailTest.PostMailTestAsync)).WithOpenApi();
 
             return endpoints;
         }

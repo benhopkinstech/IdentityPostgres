@@ -15,7 +15,7 @@ namespace IdentityPostgres.Modules.ConfigurationModule.Endpoints
                 return Results.NotFound("No configuration record found");
 
             ConfigurationModel configuration = new ConfigurationModel();
-            configuration.CurrentMailProvider = config.Mail != null ? MailHelper.DetermineMailProviderName(config.Mail.ProviderId) : "";
+            configuration.MailProvider = config.Mail != null ? MailHelper.DetermineMailProviderName(config.Mail.ProviderId) : "";
             configuration.AccountVerificationRequired = config.AccountVerificationRequired;
 
             return Results.Ok(configuration);
