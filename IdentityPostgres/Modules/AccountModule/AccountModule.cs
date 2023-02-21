@@ -25,6 +25,10 @@ namespace IdentityPostgres.Modules.AccountModule
                 .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status400BadRequest).Produces(StatusCodes.Status401Unauthorized).Produces(StatusCodes.Status403Forbidden)
                 .WithTags(_module).WithName(nameof(PostLogin.LoginAsync)).WithOpenApi();
 
+            endpoints.MapPost($"{_module}/Verify", PutVerify.VerifyAsync)
+                .Produces(StatusCodes.Status200OK)
+                .WithTags(_module).WithName(nameof(PutVerify.VerifyAsync)).WithOpenApi();
+
             return endpoints;
         }
     }
