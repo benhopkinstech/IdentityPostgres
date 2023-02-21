@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace IdentityPostgres.Modules.Account.Models
+﻿namespace IdentityPostgres.Modules.AccountModule.Models
 {
     public class CredentialsModel
     {

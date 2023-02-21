@@ -1,13 +1,12 @@
 ﻿using IdentityPostgres.Interfaces;
-using IdentityPostgres.Modules.Account.Endpoints;
-using IdentityPostgres.Modules.Account.Filters;
-using Microsoft.AspNetCore.Builder;
+using IdentityPostgres.Modules.AccountModule.Endpoints;
+using IdentityPostgres.Modules.AccountModule.Filters;
 
-namespace IdentityPostgres.Modules.Account
+namespace IdentityPostgres.Modules.AccountModule
 {
     public class AccountModule : IModule
     {
-        private string _module = "Account";
+        private readonly string _module = "Account";
 
         public IServiceCollection RegisterModule(IServiceCollection services)
         {
@@ -20,6 +19,12 @@ namespace IdentityPostgres.Modules.Account
                 .AddEndpointFilter<CredentialsValidationFilter>()
                 .Produces(StatusCodes.Status201Created).Produces(StatusCodes.Status400BadRequest).Produces(StatusCodes.Status409Conflict)
                 .WithTags(_module).WithName(nameof(PostRegister.RegisterAsync)).WithOpenApi();
+
+            endpoints.MapPost($"{_module}/Login", PostLogin.LoginAsync)
+                .AddEndpointFilter<CredentialsValidationFilter>()
+                .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status400BadRequest).Produces(StatusCodes.Status401Unauthorized).Produces(StatusCodes.Status403Forbidden)
+                .WithTags(_module).WithName(nameof(PostLogin.LoginAsync)).WithOpenApi();
+
             return endpoints;
         }
     }

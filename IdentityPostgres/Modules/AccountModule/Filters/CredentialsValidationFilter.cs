@@ -1,7 +1,7 @@
-﻿using IdentityPostgres.Modules.Account.Models;
+﻿using IdentityPostgres.Modules.AccountModule.Models;
 using System.Net.Mail;
 
-namespace IdentityPostgres.Modules.Account.Filters
+namespace IdentityPostgres.Modules.AccountModule.Filters
 {
     public class CredentialsValidationFilter : IEndpointFilter
     {
