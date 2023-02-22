@@ -1,4 +1,5 @@
 ﻿
+using IdentityPostgres.Classes;
 using IdentityPostgres.Modules.ConfigurationModule.Models;
 using System.Net.Mail;
 
@@ -20,14 +21,7 @@ namespace IdentityPostgres.Modules.ConfigurationModule.Filters
             if (mail.ApiKey.Length > 256)
                 errors.Add("API Key maximum length is 256");
 
-            if (String.IsNullOrWhiteSpace(mail.FromEmail))
-                errors.Add("Email address must be provided");
-
-            if (mail.FromEmail.Length > 256)
-                errors.Add("Email address maximum length is 256");
-
-            if (!MailAddress.TryCreate(mail.FromEmail, out _))
-                errors.Add("Email address format invalid");
+            errors.AddRange(Validation.EmailValidation(mail.FromEmail));
 
             if (String.IsNullOrWhiteSpace(mail.FromName))
                 errors.Add("Name must be provided");

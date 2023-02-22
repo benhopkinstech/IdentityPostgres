@@ -1,0 +1,40 @@
+﻿using System.Net;
+using System.Net.Mail;
+
+namespace IdentityPostgres.Classes
+{
+    public class Validation
+    {
+        public static List<string> EmailValidation(string email)
+        {
+            var errors = new List<string>();
+
+            if (String.IsNullOrWhiteSpace(email))
+                errors.Add("Email address must be provided");
+
+            if (email.Length > 256)
+                errors.Add("Email address maximum length is 256");
+
+            if (!MailAddress.TryCreate(email, out _))
+                errors.Add("Email address format invalid");
+
+            return errors;
+        }
+
+        public static List<string> PasswordValidation(string password)
+        {
+            var errors = new List<string>();
+
+            if (String.IsNullOrWhiteSpace(password))
+                errors.Add("Password must be provided");
+
+            if (password.Length < 8)
+                errors.Add("Password minimum length is 8");
+
+            if (password.Length > 72)
+                errors.Add("Password maximum length is 72");
+
+            return errors;
+        }
+    }
+}
