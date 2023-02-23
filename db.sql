@@ -74,25 +74,6 @@ ALTER TABLE IF EXISTS identity.config
 
 INSERT INTO identity.config (account_verification_required) VALUES (false);
 --------------------------------------------------
-CREATE TABLE identity.config_mail_template
-(
-    id uuid NOT NULL,
-    mail_id uuid NOT NULL,
-    type_id smallint NOT NULL,
-    provider_template_identifier character varying(100) NOT NULL,
-    created_on timestamp with time zone NOT NULL DEFAULT (now() at time zone 'utc'),
-    updated_on timestamp with time zone,
-    CONSTRAINT pk_config_mail_template PRIMARY KEY (id),
-    CONSTRAINT u_config_mail_template UNIQUE (mail_id, type_id),
-    CONSTRAINT fk_config_mail_template_config_mail FOREIGN KEY (mail_id)
-        REFERENCES identity.config_mail (id),
-    CONSTRAINT fk_config_mail_template_config_mail_type FOREIGN KEY (type_id)
-        REFERENCES identity.config_mail_type (id)
-);
-
-ALTER TABLE IF EXISTS identity.config_mail_template
-    OWNER to postgres;
---------------------------------------------------
 CREATE TABLE identity.account
 (
     id uuid NOT NULL,

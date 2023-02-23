@@ -44,7 +44,7 @@ namespace IdentityPostgres.Classes
             };
         }
 
-        public static async Task<bool> SendMailAsync(ConfigMail mail, Enums.MailType mailType, string recipient)
+        public static async Task<bool> SendMailAsync(ConfigMail mail, Enums.MailType mailType, string recipient, string url)
         {
             return mail.ProviderId switch
             {
@@ -58,14 +58,7 @@ namespace IdentityPostgres.Classes
             var client = new SendGridClient(mail.ApiKey);
             var from = new EmailAddress(mail.Email, mail.Name);
             var to = new EmailAddress(recipient);
-            SendGridMessage message;
-
-            var template = mail.ConfigMailTemplate.Where(x => x.TypeId == (short)mailType).FirstOrDefault();
-            if (template != null)
-                message = SendGrid.Helpers.Mail.MailHelper.CreateSingleTemplateEmail(from, to, template.ProviderTemplateIdentifier, null);
-            else
-                message = SendGrid.Helpers.Mail.MailHelper.CreateSingleEmail(from, to, GenerateSubject(mailType), GeneratePlainText(mailType), GenerateHtml(mailType));
-
+            SendGridMessage message = SendGrid.Helpers.Mail.MailHelper.CreateSingleEmail(from, to, GenerateSubject(mailType), GeneratePlainText(mailType), GenerateHtml(mailType));
             var response = await client.SendEmailAsync(message);
             if (!response.IsSuccessStatusCode)
                 return false;

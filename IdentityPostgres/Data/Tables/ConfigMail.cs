@@ -21,7 +21,5 @@ public partial class ConfigMail
 
     public virtual ICollection<Config> Config { get; } = new List<Config>();
 
-    public virtual ICollection<ConfigMailTemplate> ConfigMailTemplate { get; } = new List<ConfigMailTemplate>();
-
     public virtual ConfigMailProvider Provider { get; set; } = null!;
 }

@@ -26,8 +26,6 @@ public partial class IdentityContext : DbContext
 
     public virtual DbSet<ConfigMailProvider> ConfigMailProvider { get; set; }
 
-    public virtual DbSet<ConfigMailTemplate> ConfigMailTemplate { get; set; }
-
     public virtual DbSet<ConfigMailType> ConfigMailType { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -183,38 +181,6 @@ public partial class IdentityContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(20)
                 .HasColumnName("name");
-        });
-
-        modelBuilder.Entity<ConfigMailTemplate>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_config_mail_template");
-
-            entity.ToTable("config_mail_template", "identity");
-
-            entity.HasIndex(e => new { e.MailId, e.TypeId }, "u_config_mail_template").IsUnique();
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
-            entity.Property(e => e.CreatedOn)
-                .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
-                .HasColumnName("created_on");
-            entity.Property(e => e.MailId).HasColumnName("mail_id");
-            entity.Property(e => e.ProviderTemplateIdentifier)
-                .HasMaxLength(100)
-                .HasColumnName("provider_template_identifier");
-            entity.Property(e => e.TypeId).HasColumnName("type_id");
-            entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
-
-            entity.HasOne(d => d.Mail).WithMany(p => p.ConfigMailTemplate)
-                .HasForeignKey(d => d.MailId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_config_mail_template_config_mail");
-
-            entity.HasOne(d => d.Type).WithMany(p => p.ConfigMailTemplate)
-                .HasForeignKey(d => d.TypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_config_mail_template_config_mail_type");
         });
 
         modelBuilder.Entity<ConfigMailType>(entity =>

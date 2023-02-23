@@ -8,7 +8,7 @@ namespace IdentityPostgres.Modules.AccountModule.Endpoints
 {
     public static class PostRegister
     {
-        public static async Task<IResult> RegisterAsync(CredentialsModel credentials, IdentityContext context)
+        public static async Task<IResult> RegisterAsync(CredentialsModel credentials, IdentityContext context, HttpContext httpContext)
         {
             if (await context.Account.AnyAsync(x => x.ProviderId == (short)Enums.AccountProvider.LocalIdentity && x.Email == credentials.Email))
                 return Results.Conflict("Email already in use");
@@ -20,9 +20,12 @@ namespace IdentityPostgres.Modules.AccountModule.Endpoints
             await context.AccountPassword.AddAsync(password);
             await context.SaveChangesAsync();
 
-            var config = await context.Config.Include(x => x.Mail).ThenInclude(x => x!.ConfigMailTemplate).FirstOrDefaultAsync();
+            var config = await context.Config.Include(x => x.Mail).FirstOrDefaultAsync();
             if (config != null && config.Mail != null)
-                await MailHelper.SendMailAsync(config.Mail, Enums.MailType.EmailVerification, credentials.Email);
+            {
+                var baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
+                await MailHelper.SendMailAsync(config.Mail, Enums.MailType.EmailVerification, credentials.Email, baseUrl);
+            }
 
             return Results.Created(accountId.ToString(), "Account created");
         }
