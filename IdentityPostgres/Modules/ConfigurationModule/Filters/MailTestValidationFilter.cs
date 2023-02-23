@@ -12,7 +12,7 @@ namespace IdentityPostgres.Modules.ConfigurationModule.Filters
             var mailTest = context.GetArgument<MailTestModel>(0);
             var errors = new List<string>();
 
-            errors.AddRange(Validation.EmailValidation(mailTest.RecipientEmail));
+            errors.AddRange(Validation.EmailCheck(mailTest.RecipientEmail));
 
             if (errors.Count > 0)
                 return Results.BadRequest(errors);

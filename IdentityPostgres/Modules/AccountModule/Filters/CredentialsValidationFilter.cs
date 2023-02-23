@@ -11,9 +11,9 @@ namespace IdentityPostgres.Modules.AccountModule.Filters
             var credentials = context.GetArgument<CredentialsModel>(0);
             var errors = new List<string>();
 
-            errors.AddRange(Validation.EmailValidation(credentials.Email));
+            errors.AddRange(Validation.EmailCheck(credentials.Email));
 
-            errors.AddRange(Validation.PasswordValidation(credentials.Password));
+            errors.AddRange(Validation.PasswordCheck(credentials.Password));
 
             if (errors.Count > 0)
                 return Results.BadRequest(errors);

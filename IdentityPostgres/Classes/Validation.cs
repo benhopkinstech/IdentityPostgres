@@ -5,7 +5,7 @@ namespace IdentityPostgres.Classes
 {
     public class Validation
     {
-        public static List<string> EmailValidation(string email)
+        public static List<string> EmailCheck(string email)
         {
             var errors = new List<string>();
 
@@ -21,7 +21,7 @@ namespace IdentityPostgres.Classes
             return errors;
         }
 
-        public static List<string> PasswordValidation(string password)
+        public static List<string> PasswordCheck(string password)
         {
             var errors = new List<string>();
 

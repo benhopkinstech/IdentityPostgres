@@ -21,7 +21,7 @@ namespace IdentityPostgres.Modules.ConfigurationModule.Filters
             if (mail.ApiKey.Length > 256)
                 errors.Add("API Key maximum length is 256");
 
-            errors.AddRange(Validation.EmailValidation(mail.FromEmail));
+            errors.AddRange(Validation.EmailCheck(mail.FromEmail));
 
             if (String.IsNullOrWhiteSpace(mail.FromName))
                 errors.Add("Name must be provided");
