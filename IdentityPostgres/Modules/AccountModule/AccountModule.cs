@@ -25,9 +25,9 @@ namespace IdentityPostgres.Modules.AccountModule
                 .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status400BadRequest).Produces(StatusCodes.Status401Unauthorized).Produces(StatusCodes.Status403Forbidden)
                 .WithTags(_module).WithName(nameof(PostLogin.LoginAsync)).WithOpenApi();
 
-            endpoints.MapPost($"{_module}/Verify", PutVerify.VerifyAsync)
-                .Produces(StatusCodes.Status200OK)
-                .WithTags(_module).WithName(nameof(PutVerify.VerifyAsync)).WithOpenApi();
+            endpoints.MapPost($"{_module}/Verify", PostVerify.VerifyAsync)
+                .Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status404NotFound)
+                .WithTags(_module).WithName(nameof(PostVerify.VerifyAsync)).WithOpenApi();
 
             return endpoints;
         }

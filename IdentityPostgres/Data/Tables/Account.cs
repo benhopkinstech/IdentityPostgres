@@ -23,5 +23,7 @@ public partial class Account
 
     public virtual AccountPassword? AccountPassword { get; set; }
 
+    public virtual ICollection<AccountVerification> AccountVerification { get; } = new List<AccountVerification>();
+
     public virtual AccountProvider Provider { get; set; } = null!;
 }

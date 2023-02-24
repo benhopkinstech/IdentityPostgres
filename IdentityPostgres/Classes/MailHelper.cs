@@ -48,17 +48,17 @@ namespace IdentityPostgres.Classes
         {
             return mail.ProviderId switch
             {
-                (short)Enums.MailProvider.SendGrid => await UseSendGridAsync(mail, mailType, recipient),
+                (short)Enums.MailProvider.SendGrid => await UseSendGridAsync(mail, mailType, recipient, url),
                 _ => false,
             };
         }
 
-        private static async Task<bool> UseSendGridAsync(ConfigMail mail, Enums.MailType mailType, string recipient)
+        private static async Task<bool> UseSendGridAsync(ConfigMail mail, Enums.MailType mailType, string recipient, string url)
         {
             var client = new SendGridClient(mail.ApiKey);
             var from = new EmailAddress(mail.Email, mail.Name);
             var to = new EmailAddress(recipient);
-            SendGridMessage message = SendGrid.Helpers.Mail.MailHelper.CreateSingleEmail(from, to, GenerateSubject(mailType), GeneratePlainText(mailType), GenerateHtml(mailType));
+            SendGridMessage message = SendGrid.Helpers.Mail.MailHelper.CreateSingleEmail(from, to, GenerateSubject(mailType), GeneratePlainText(mailType), GenerateHtml(mailType, url));
             var response = await client.SendEmailAsync(message);
             if (!response.IsSuccessStatusCode)
                 return false;
@@ -86,12 +86,12 @@ namespace IdentityPostgres.Classes
             };
         }
 
-        private static string GenerateHtml(Enums.MailType mailType)
+        private static string GenerateHtml(Enums.MailType mailType, string url)
         {
             return mailType switch
             {
                 Enums.MailType.Test => "Test mail sent from <strong>Identity Postgres</strong>",
-                Enums.MailType.EmailVerification => "Thanks for registering, please confirm your <i>email address</i>",
+                Enums.MailType.EmailVerification => $@"Thanks for registering, please confirm your email address <form action=""{url}"" method=""post""><button type=""submit"">Confirm</button></form>",
                 _ => "",
             };
         }

@@ -20,6 +20,8 @@ public partial class IdentityContext : DbContext
 
     public virtual DbSet<AccountProvider> AccountProvider { get; set; }
 
+    public virtual DbSet<AccountVerification> AccountVerification { get; set; }
+
     public virtual DbSet<Config> Config { get; set; }
 
     public virtual DbSet<ConfigMail> ConfigMail { get; set; }
@@ -114,6 +116,24 @@ public partial class IdentityContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(20)
                 .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<AccountVerification>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_account_verification");
+
+            entity.ToTable("account_verification", "identity");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.AccountId).HasColumnName("account_id");
+            entity.Property(e => e.CreatedOn).HasColumnName("created_on");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.AccountVerification)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_account_verification_account");
         });
 
         modelBuilder.Entity<Config>(entity =>
